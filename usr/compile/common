@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Include utils
+source utils
+
+# Locations
+CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+ROOT_DIR=$( cd "$( dirname "${CURRENT_DIR}" )" && pwd )
+LIBS_DIR="${ROOT_DIR}/libs"
+
+# Customize PATH
+export PATH="${LIBS_DIR}/bin:${PATH}"
+
+# Customize LD_LIBRARY_PATH
+if [ -z "${LD_LIBRARY_PATH}" ]; then
+    export LD_LIBRARY_PATH="${LIBS_DIR}/lib"
+else
+    export LD_LIBRARY_PATH="${LIBS_DIR}/lib:${LD_LIBRARY_PATH}"
+fi
+
+# Customize LIBRARY_PATH
+if [ -z "${LIBRARY_PATH}" ]; then
+    export LIBRARY_PATH="${LIBS_DIR}/lib"
+else
+    export LIBRARY_PATH="${LIBS_DIR}/lib:${LIBRARY_PATH}"
+fi
+
+# Customize PKG_CONFIG_PATH
+if [ -z "${PKG_CONFIG_PATH}" ]; then
+    export PKG_CONFIG_PATH="${LIBS_DIR}/lib/pkgconfig"
+else
+    export PKG_CONFIG_PATH="${LIBS_DIR}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+fi
+
+# Customize CPATH
+# see https://gcc.gnu.org/onlinedocs/gcc-4.8.1/gcc/Environment-Variables.html#Environment-Variables
+if [ -z "${CPATH}" ]; then
+    export CPATH="${LIBS_DIR}/include"
+else
+    export CPATH="${LIBS_DIR}/include:${CPATH}"
+fi

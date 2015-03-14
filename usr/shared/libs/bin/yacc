@@ -1,0 +1,2 @@
+#! /bin/sh
+exec '${OPENSHIFT_PHP_LIBS_DIR}/bin/bison' -y "$@"

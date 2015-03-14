@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+  -v|--version)
+    version="$2"
+esac
+
+# Resolve version
+PHP_VERSION=5.5.22
+if [ -d "${OPENSHIFT_PHP_DIR}/usr/php-${version}/" ]; then
+    PHP_VERSION="${version}"
+fi
+PHP_VERSION_DIR=${OPENSHIFT_PHP_DIR}/usr/php-${PHP_VERSION}
+
+# Create dirs
+for dir in logs run conf; do
+    mkdir -p "${OPENSHIFT_PHP_DIR}/${dir}"
+done
+
+# Set version env variables
+echo "${PHP_VERSION}" > env/OPENSHIFT_PHP_VERSION
+echo "${PHP_VERSION_DIR}" > env/OPENSHIFT_PHP_VERSION_DIR
+echo "${PHP_VERSION_DIR}/bin" > env/OPENSHIFT_PHP_PATH_ELEMENT
+echo `${PHP_VERSION_DIR}/bin/php-config --extension-dir` > env/OPENSHIFT_PHP_EXTENSION_DIR

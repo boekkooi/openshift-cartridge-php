@@ -1,0 +1,74 @@
+#!/bin/bash
+set -e
+
+CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+# Set variables
+PHP_BIN_DIR=${OPENSHIFT_PHP_VERSION_DIR}/bin
+BUILD_DIR="${OPENSHIFT_TMP_DIR}/pecl-build"
+
+# Include utils
+export PATH="${OPENSHIFT_PHP_LIBS_DIR}/bin:${PATH}"
+source "${OPENSHIFT_PHP_DIR}/usr/compile/utils"
+
+function check_pecl() {
+    if [ -z "${1}" ] || [ -z "${2}" ]; then
+        echo "check_pecl: expected two arguments <ext> <version>"
+        return 1
+    fi
+
+    local pecl_version=`${PHP_BIN_DIR}/php -r "echo phpversion('${1}');"`
+
+    if [[ ${2} != ${pecl_version} ]]; then
+        echo "PHP pecl ${1} not installed or old version ${pecl_version}."
+        install_pecl ${1} ${2} ${3}
+    else
+        echo "PHP pecl ${1} up to date, version: ${2}."
+    fi
+}
+
+function install_pecl() {
+    if [ -z "${1}" ] || [ -z "${2}" ]; then
+        echo "check_pecl: expected two arguments <ext> <version>"
+        return 1
+    fi
+
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+
+    # Get archive
+    if [ "${1}" == "phalcon" ]; then
+        local name=phalcon-v${2}
+        download_and_unpack ${name}.tar.gz https://github.com/phalcon/cphalcon/archive/${name}.tar.gz cphalcon-${name}
+        pushd cphalcon-${name}/build/64bits
+    else
+        local name=${1}-${2}
+        download_and_unpack ${name}.tgz http://pecl.php.net/get/${name}.tgz
+        pushd ${name}
+    fi
+
+    echo "Configuring ${1}."
+    ${PHP_BIN_DIR}/phpize
+    ./configure \
+        --with-php-config=${PHP_BIN_DIR}/php-config \
+        ${3}
+
+    echo "Compiling ${1}."
+    make install
+
+    echo "Cleaning build directory."
+    popd
+    popd
+    rm -rf ${BUILD_DIR}
+
+    # Add extension to the php.ini
+    if ! grep "extension=${1}.so" "${OPENSHIFT_PHP_DIR}/conf/php.ini"; then
+        echo "extension=${1}.so" >> ${OPENSHIFT_PHP_DIR}/conf/php.ini
+    fi
+    if ! grep "extension=${1}.so" "${OPENSHIFT_PHP_DIR}/conf/php-fpm.ini"; then
+        echo "extension=${1}.so" >> ${OPENSHIFT_PHP_DIR}/conf/php-fpm.ini
+    fi
+}
+
+# Install extensions
+check_pecl ${1} ${2} ${3}

@@ -1,0 +1,100 @@
+#!/bin/bash
+set -e
+
+source ${OPENSHIFT_CARTRIDGE_SDK_BASH}
+
+export STOPTIMEOUT=20
+
+PHP_FPM_EXEC=${OPENSHIFT_PHP_VERSION_DIR}/sbin/php-fpm
+PHP_FPM_PID=${OPENSHIFT_PHP_DIR}/run/php-fpm.pid
+
+function start() {
+    # Start php fpm
+    ${PHP_FPM_EXEC} \
+        --php-ini "${OPENSHIFT_PHP_DIR}/conf/php-fpm.ini" \
+        --fpm-config "${OPENSHIFT_PHP_DIR}/conf/php-fpm.conf" \
+        --prefix "${OPENSHIFT_PHP_DIR}"
+}
+
+
+function stop() {
+    [ -f "${PHP_FPM_PID}" ] && pid=$( /bin/cat "${PHP_FPM_PID}" )
+    if `ps -p ${pid} > /dev/null 2>&1`; then
+        /bin/kill ${pid}
+        ret=$?
+        if [ ${ret} -eq 0 ]; then
+            TIMEOUT="${STOPTIMEOUT}"
+            while [ ${TIMEOUT} -gt 0 ] && [ -f "${PHP_FPM_PID}" ]; do
+                /bin/kill -0 "${pid}" >/dev/null 2>&1 || break
+                sleep .5
+                let TIMEOUT=${TIMEOUT}-1
+            done
+        fi
+    else
+        if `pgrep -x php-fpm > /dev/null 2>&1`
+        then
+            echo "Warning: PHP-FPM process exists without a pid file.  Use force-stop to kill." 1>&2
+        else
+            echo "PHP-FPM already stopped" 1>&2
+        fi
+    fi
+}
+
+function restart() {
+    stop
+    start
+}
+
+function status() {
+    echo "TODO"
+}
+
+function build() {
+    # Install config files
+    declare -A CONF_FILES
+    CONF_FILES=( ['cli/php.ini.erb']='php.ini' ['fpm/php.ini.erb']='php-fpm.ini' ['fpm/php-fpm.conf.erb']='php-fpm.conf' )
+    for file in "${!CONF_FILES[@]}"; do
+        CONF_TARGET_FILE=${CONF_FILES["${file}"]}
+        CONF_FILE=${OPENSHIFT_REPO_DIR}/.openshift/${file}
+
+        if [ -f "${CONF_FILE}" ]; then
+            oo-erb ${CONF_FILE} > ${OPENSHIFT_PHP_DIR}/conf/${CONF_TARGET_FILE}
+        fi
+    done
+
+    # Install pecl
+    PECL_FILE=${OPENSHIFT_REPO_DIR}/.openshift/php-pecl.txt
+    if [ -f ${PECL_FILE} ]; then
+        OLDIFS=$IFS
+        IFS=$'\n'
+        for pecl in $(cat ${PECL_FILE}); do
+            if [ ! -z ${pecl} ]; then
+                IFS=' ' read -a pecl_args <<< "${pecl}"
+                ${OPENSHIFT_PHP_DIR}/bin/install_pecl "${pecl_args[0]}" "${pecl_args[1]}" "${pecl_args[2]}"
+            fi
+        done
+        IFS=${OLDIFS}
+    fi
+
+    # Composer self-update
+    COMPOSER_PATH=${PHP_VERSION_DIR}/bin/composer
+    if [ -f "${COMPOSER_PATH}" ]; then
+        ${COMPOSER_PATH} self-update
+    fi
+}
+
+function tidy() {
+    client_message "Emptying log dir: ${OPENSHIFT_PHP_DIR}/logs"
+    shopt -s dotglob
+    rm -rf "${OPENSHIFT_PHP_DIR}/logs/*"
+}
+
+case "$1" in
+  start)     start ;;
+  stop)      stop ;;
+  restart)   restart ;;
+  status)    status ;;
+  tidy)      tidy ;;
+  build)     build ;;
+  *)         exit 0
+esac

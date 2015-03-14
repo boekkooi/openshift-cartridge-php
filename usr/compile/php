@@ -1,0 +1,122 @@
+#!/bin/bash
+set -e
+
+# Include common setup
+source common
+
+# Set build dir
+BUILD_DIR="${CURRENT_DIR}/tmp"
+
+# Define function
+function install_php() {
+    local pkg=php-${PHP_VERSION}.tar.gz
+
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+
+    # Get archive
+    download_and_unpack ${pkg} http://www.php.net/get/${pkg}/from/us1.php.net/mirror
+    pushd php-${PHP_VERSION}
+
+    echo "Configuring PHP."
+    ./configure \
+        --prefix=${PHP_DIR} \
+        --with-mcrypt=${LIBS_DIR} \
+        --with-layout=PHP \
+        --with-curl \
+        --with-zlib \
+        --with-mhash \
+        --with-mysql \
+        --with-pgsql \
+        --with-mysqli \
+        --with-pdo-mysql \
+        --with-pdo-pgsql \
+        --with-openssl \
+        --with-xmlrpc \
+        --with-xsl \
+        --with-bz2 \
+        --with-gettext \
+        --with-readline \
+        --with-kerberos \
+        --with-gd \
+        --with-jpeg-dir \
+        --with-png-dir \
+        --with-png-dir \
+        --with-xpm-dir \
+        --with-freetype-dir \
+        --without-pear \
+        --disable-debug \
+        --enable-gd-native-ttf \
+        --enable-fpm \
+        --enable-cli \
+        --enable-inline-optimization \
+        --enable-exif \
+        --enable-wddx \
+        --enable-zip \
+        --enable-bcmath \
+        --enable-calendar \
+        --enable-ftp \
+        --enable-mbstring \
+        --enable-soap \
+        --enable-sockets \
+        --enable-shmop \
+        --enable-dba \
+        --enable-sysvsem \
+        --enable-sysvshm \
+        --enable-sysvmsg \
+        --enable-intl \
+        --enable-opcache
+
+    echo "Compiling PHP."
+    make install
+
+    echo "Cleaning build directory."
+    popd
+    popd
+    rm -rf ${BUILD_DIR}
+}
+
+# Compile all required versions
+for version in $(cat versions); do
+    if [ ! -z "${version}" ]; then
+        PHP_DIR="${ROOT_DIR}/php-${version}"
+        PHP_VERSION="${version}"
+
+        # Install php
+        install_php
+
+        # Remove unneeded files
+        rm -f "${PHP_DIR}/bin/phar"
+        rm -rf "${PHP_DIR}/etc"
+        rm -rf "${PHP_DIR}/php"
+        rm -rf "${PHP_DIR}/var"
+
+        # Patch install for cartridge usage
+        PHP_DIR_ESCAPED="${PHP_DIR//\//\\/}"
+        LIBS_DIR_ESCAPED="${LIBS_DIR//\//\\/}"
+
+        pushd ${PHP_DIR}/bin
+        for file in pecl php-config phpize; do
+            if [ -f ${file} ]; then
+                sed -i "s/${PHP_DIR_ESCAPED}/\${OPENSHIFT_PHP_VERSION_DIR}/g" ${file}
+                sed -i "s/${LIBS_DIR_ESCAPED}/\${OPENSHIFT_PHP_LIBS_DIR}/g" ${file}
+            fi
+        done
+        popd
+
+        pushd ${PHP_DIR}/include/php/main
+        file=build-defs.h
+        if [ -f ${file} ]; then
+            sed -i "s/${PHP_DIR_ESCAPED}/\${OPENSHIFT_PHP_VERSION_DIR}/g" ${file}
+            sed -i "s/${LIBS_DIR_ESCAPED}/\${OPENSHIFT_PHP_LIBS_DIR}/g" ${file}
+        fi
+        popd
+
+
+        # Compress
+        tar -zcvf "${OPENSHIFT_REPO_DIR}/public/php-${version}.tar.gz" ${PHP_DIR}
+
+        # Clean up
+        rm -rf ${PHP_DIR}
+    fi
+done

@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+# Include common setup
+source common
+
+# Patch libs for cartridge usage
+pushd ${LIBS_DIR}/bin
+LIBS_DIR_ESCAPED="${LIBS_DIR//\//\\/}"
+for file in icu-config libmcrypt-config libtoolize yacc; do
+    if [ -f ${file} ]; then
+        sed -i "s/${LIBS_DIR_ESCAPED}/\${OPENSHIFT_PHP_LIBS_DIR}/g" ${file}
+    fi
+done
+popd
+
+# Remove unneeded files
+rm -rf "${LIBS_DIR}/man"
+rm -rf "${LIBS_DIR}/share/man"
+
+# Compress for download
+tar -zcvf ${OPENSHIFT_REPO_DIR}/public/libs.tar.gz ${LIBS_DIR}

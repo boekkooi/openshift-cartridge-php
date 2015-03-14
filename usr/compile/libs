@@ -1,0 +1,141 @@
+#!/bin/bash
+set -e
+
+# Include common setup
+source common
+
+# Set build dir
+BUILD_DIR="${CURRENT_DIR}/tmp/"
+
+# Versions
+ICU_VERSION='54.1'
+LIBMCRYPT_VERSION='2.5.8'
+LIBTOOL_VERSION='2.4.6'
+RE2C_VERSION='0.14.1'
+BISON_VERSION='2.7.1'
+
+# Define functions
+function install_re2c() {
+    # Remark if not in PATH add RE2C=${LIBS_DIR}/bin/re2c to php ./configure
+    local pkg=re2c-${RE2C_VERSION}.tar.gz
+    local ts=`date +%s`
+
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+
+    # Get archive
+    download_and_unpack ${pkg} "http://sourceforge.net/projects/re2c/files/re2c/${RE2C_VERSION}/${pkg}/download?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fre2c%2F&ts=${ts}&use_mirror=freefr"
+    pushd re2c-${RE2C_VERSION}
+
+    echo "Configuring Re2c."
+    ./configure --prefix=${LIBS_DIR}/
+
+    echo "Compiling Re2c."
+    make install
+
+    popd
+    popd
+    rm -rf ${BUILD_DIR}
+}
+
+function install_bison() {
+    local pkg=bison-${BISON_VERSION}.tar.gz
+
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+
+    # Get archive
+    download_and_unpack ${pkg} http://ftp.gnu.org/gnu/bison/${pkg}
+    pushd bison-${BISON_VERSION}
+
+    echo "Configuring Bison."
+    ./configure --prefix=${LIBS_DIR}
+
+    echo "Compiling Bison."
+    make install
+
+    popd
+    popd
+    rm -rf ${BUILD_DIR}
+}
+
+function install_icu() {
+    local pkg=icu4c-${ICU_VERSION//./_}-src.tgz
+
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+
+    # Get archive
+    download_and_unpack ${pkg} http://download.icu-project.org/files/icu4c/${ICU_VERSION}/${pkg} icu
+    pushd icu/source/
+
+    echo "Configuring ICU."
+    chmod +x runConfigureICU configure install-sh
+    ./configure --prefix=${LIBS_DIR}
+
+    echo "Compiling ICU."
+    make install
+
+    echo "Cleaning build directory."
+    popd
+    popd
+    rm -rf ${BUILD_DIR}
+}
+
+function install_libmcrypt() {
+    local pkg=libmcrypt-${LIBMCRYPT_VERSION}.tar.gz
+    local ts=`date +%s`
+
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+
+    # Get archive
+    download_and_unpack ${pkg} "http://sourceforge.net/projects/mcrypt/files/Libmcrypt/${LIBMCRYPT_VERSION}/${pkg}/download?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmcrypt%2F&ts=${ts}&use_mirror=freefr"
+    pushd libmcrypt-${LIBMCRYPT_VERSION}
+
+    echo "Configuring LibMCrypt."
+    ./configure \
+        --disable-posix-threads \
+        --enable-dynamic-loading \
+		--disable-shared \
+		--with-included-algos=cbc,cfb,ctr,ecb,ncfb,nofb,ofb,stream,cast-128,gost,rijndael-128,twofish,arcfour,cast-256,loki97,rijndael-192,saferplus,wake,blowfish-compat,des,rijndael-256,serpent,xtea,blowfish,enigma,rc2,tripledes \
+        --prefix=${LIBS_DIR}
+
+    echo "Compiling LibMCrypt."
+    make install
+
+    popd
+    popd
+    rm -rf ${BUILD_DIR}
+}
+
+function install_libtool() {
+    local pkg=libtool-${LIBTOOL_VERSION}.tar.gz
+    local ts=`date +%s`
+
+    mkdir -p ${BUILD_DIR}
+    pushd ${BUILD_DIR}
+
+    # Get archive
+    download_and_unpack ${pkg} http://gnu.xl-mirror.nl/libtool/${pkg}
+    pushd libtool-${LIBTOOL_VERSION}
+
+    echo "Configuring Libtool."
+    ./configure --prefix=${LIBS_DIR}
+
+    echo "Compiling Libtool."
+    make install
+
+    popd
+    popd
+    rm -rf ${BUILD_DIR}
+}
+
+# Install php dependencies
+install_libtool
+install_libmcrypt
+install_icu
+install_bison
+install_re2c
+
+echo "Done compiling libs"
