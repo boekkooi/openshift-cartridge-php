@@ -60,6 +60,13 @@ apcu 4.0.7
 mongo 1.6.5
 ```
 
+### Phalcon
+There is special support for [phalcon](http://phalconphp.com/) you can simply install it by adding the following to your `.openshift/php-pecl.txt` file.
+```
+phalcon 1.3.4 --enable-phalcon
+```
+Don't forget to change your `.openshift/nginx.conf.erb` according to the [phalcon nginx installation notes](http://docs.phalconphp.com/en/latest/reference/nginx.html).
+
 ## Versions
 Currently this cartridge has the following versions:
 - 5.5.22
