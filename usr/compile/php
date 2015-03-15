@@ -19,8 +19,10 @@ function install_php() {
     pushd php-${PHP_VERSION}
 
     echo "Configuring PHP."
+    EXTENSION_DIR=${ROOT_DIR}/ext \
     ./configure \
         --prefix=${PHP_DIR} \
+        --localstatedir=${ROOT_DIR} \
         --with-mcrypt=${LIBS_DIR} \
         --with-layout=PHP \
         --with-curl \
@@ -94,12 +96,14 @@ for version in $(cat versions); do
         # Patch install for cartridge usage
         PHP_DIR_ESCAPED="${PHP_DIR//\//\\/}"
         LIBS_DIR_ESCAPED="${LIBS_DIR//\//\\/}"
+        ROOT_DIR_ESCAPED="${ROOT_DIR//\//\\/}"
 
         pushd ${PHP_DIR}/bin
         for file in pecl php-config phpize; do
             if [ -f ${file} ]; then
                 sed -i "s/${PHP_DIR_ESCAPED}/\${OPENSHIFT_PHP_VERSION_DIR}/g" ${file}
                 sed -i "s/${LIBS_DIR_ESCAPED}/\${OPENSHIFT_PHP_LIBS_DIR}/g" ${file}
+                sed -i "s/${ROOT_DIR_ESCAPED}/\${OPENSHIFT_PHP_DIR}/g" ${file}
             fi
         done
         popd
@@ -109,12 +113,16 @@ for version in $(cat versions); do
         if [ -f ${file} ]; then
             sed -i "s/${PHP_DIR_ESCAPED}/\${OPENSHIFT_PHP_VERSION_DIR}/g" ${file}
             sed -i "s/${LIBS_DIR_ESCAPED}/\${OPENSHIFT_PHP_LIBS_DIR}/g" ${file}
+            sed -i "s/${ROOT_DIR_ESCAPED}/\${OPENSHIFT_PHP_DIR}/g" ${file}
         fi
         popd
 
 
         # Compress
-        tar -zcvf "${OPENSHIFT_REPO_DIR}/public/php-${version}.tar.gz" ${PHP_DIR}
+        pushd ${ROOT_DIR}
+        cp -R ext php-${version}/
+        tar -zcvf "${OPENSHIFT_REPO_DIR}/public/php-${version}.tar.gz" php-${version}
+        popd
 
         # Clean up
         rm -rf ${PHP_DIR}

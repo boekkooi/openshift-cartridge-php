@@ -7,9 +7,11 @@ source common
 # Patch libs for cartridge usage
 pushd ${LIBS_DIR}/bin
 LIBS_DIR_ESCAPED="${LIBS_DIR//\//\\/}"
+ROOT_DIR_ESCAPED="${ROOT_DIR//\//\\/}"
 for file in icu-config libmcrypt-config libtoolize yacc; do
     if [ -f ${file} ]; then
         sed -i "s/${LIBS_DIR_ESCAPED}/\${OPENSHIFT_PHP_LIBS_DIR}/g" ${file}
+        sed -i "s/${ROOT_DIR_ESCAPED}/\${OPENSHIFT_PHP_DIR}/g" ${file}
     fi
 done
 popd
@@ -19,4 +21,6 @@ rm -rf "${LIBS_DIR}/man"
 rm -rf "${LIBS_DIR}/share/man"
 
 # Compress for download
-tar -zcvf ${OPENSHIFT_REPO_DIR}/public/libs.tar.gz ${LIBS_DIR}
+pushd ${ROOT_DIR}
+tar -zcvf ${OPENSHIFT_REPO_DIR}/public/libs.tar.gz libs
+popd
