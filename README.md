@@ -19,6 +19,18 @@ set -e
 ${OPENSHIFT_PHP_DIR}/bin/control build
 ```
 
+Now it's time to configure nginx edit your `.openshift/nginx.conf.erb` and add the following within the `server` section:
+``` 
+# pass the PHP scripts to PHP-FPM
+location ~ \.php$ {
+    fastcgi_pass unix:<%= ENV['OPENSHIFT_PHP_SOCKET'] %>;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_param PATH_INFO $fastcgi_script_name;
+    include <%= ENV['OPENSHIFT_NGINX_DIR'] %>/usr/nginx-<%= ENV['OPENSHIFT_NGINX_VERSION'] %>/conf/fastcgi_params;
+}
+```
+
+
 ### PHP.ini etc. 
 If you have created `.openshift/action_hooks/build` you can fully customize the PHP configuration.
 In your application create the following directories:
