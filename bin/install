@@ -1,14 +1,18 @@
 #!/bin/bash
 set -e
 
+source ${OPENSHIFT_CARTRIDGE_SDK_BASH}
+
 case "$1" in
   -v|--version)
     version="$2"
 esac
 
 # Resolve version
-PHP_VERSION=5.5.22
-if [ -d "${OPENSHIFT_PHP_DIR}/usr/php-${version}/" ]; then
+PHP_VERSION=5.6.6
+if [ ! -z "${OPENSHIFT_PHP_VERSION}" ] && [ -d "${OPENSHIFT_PHP_DIR}/usr/php-${OPENSHIFT_PHP_VERSION}/" ]; then
+    PHP_VERSION="${OPENSHIFT_PHP_VERSION}"
+elif [ -d "${OPENSHIFT_PHP_DIR}/usr/php-${version}/" ]; then
     PHP_VERSION="${version}"
 fi
 PHP_VERSION_DIR=${OPENSHIFT_PHP_DIR}/usr/php-${PHP_VERSION}
@@ -23,3 +27,9 @@ else
     mv composer.phar "${COMPOSER_PATH}"
     popd
 fi
+
+client_result ""
+client_result "PHP enviroment successfully installed."
+client_result ""
+client_result " Version: ${PHP_VERSION}"
+client_result ""

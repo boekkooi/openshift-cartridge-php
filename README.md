@@ -8,6 +8,12 @@ You can add this cartridge to your application using:
 rhc cartridge add -a myapp http://cartreflect-claytondev.rhcloud.com/reflect?github=boekkooi/openshift-cartridge-php
 ```
 
+If you want to install a specific PHP version you can add `--env OPENSHIFT_PHP_VERSION=<version>` to the command.
+For example to install PHP 5.5.22 you can use:
+```BASH
+rhc cartridge add -a myapp --env OPENSHIFT_PHP_VERSION=5.5.22 http://cartreflect-claytondev.rhcloud.com/github/boekkooi/openshift-cartridge-php
+```
+
 ## Configuration
 For the best result with this cartridge you are adviced to create a `.openshift/action_hooks/build` and add the following to it:  
 ```BASH
@@ -84,4 +90,3 @@ All done just commit and push to your `openshift-cartridge-php` repo and use:
 ```BASH
 rhc cartridge add -a myapp http://cartreflect-claytondev.rhcloud.com/reflect?github=<user>/openshift-cartridge-php
 ```
-
