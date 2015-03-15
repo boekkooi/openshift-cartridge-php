@@ -27,4 +27,4 @@ done
 echo "${PHP_VERSION}" > env/OPENSHIFT_PHP_VERSION
 echo "${PHP_VERSION_DIR}" > env/OPENSHIFT_PHP_VERSION_DIR
 echo "${PHP_VERSION_DIR}/bin" > env/OPENSHIFT_PHP_PATH_ELEMENT
-echo $(echo `${PHP_VERSION_DIR}/bin/php-config --extension-dir`) > env/OPENSHIFT_PHP_EXTENSION_DIR
+echo $(eval echo `${PHP_VERSION_DIR}/bin/php-config --extension-dir`) > env/OPENSHIFT_PHP_EXTENSION_DIR
