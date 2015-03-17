@@ -5,7 +5,7 @@ License: MIT
 Version: "5.6.6"
 Versions: [ "5.5.22", "5.6.6" ]
 Website: https://github.com/boekkooi/openshift-cartridge-php
-Cartridge-Version: 0.0.1
+Cartridge-Version: 0.0.2
 Cartridge-Vendor: boekkooi
 Categories:
   - embedded
