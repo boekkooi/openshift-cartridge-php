@@ -5,7 +5,7 @@ Current this cartridge works well the [boekkooi NGINX cartridge](https://github.
 
 You can add this cartridge to your application using:
 ```BASH
-rhc cartridge add -a myapp http://cartreflect-claytondev.rhcloud.com/reflect?github=boekkooi/openshift-cartridge-php
+rhc cartridge add -a myapp http://cartreflect-claytondev.rhcloud.com/github/boekkooi/openshift-cartridge-php
 ```
 
 If you want to install a specific PHP version you can add `--env OPENSHIFT_PHP_VERSION=<version>` to the command.
@@ -97,3 +97,12 @@ All done just commit and push to your `openshift-cartridge-php` repo and use:
 ```BASH
 rhc cartridge add -a myapp http://cartreflect-claytondev.rhcloud.com/github/<user>/openshift-cartridge-php
 ```
+
+## Updates
+Updating this catridge is not as easy as I would like because openshift online won't allow updates for downloaded cartridges.
+To update the cartridge you can do the following:
+```BASH
+rhc cartridge remove -a myapp --confirm  php
+rhc cartridge add -a myapp http://cartreflect-claytondev.rhcloud.com/github/<user>/openshift-cartridge-php
+```
+This will remove the old version and install the latest version.
