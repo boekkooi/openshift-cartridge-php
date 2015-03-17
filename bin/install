@@ -18,11 +18,11 @@ fi
 PHP_VERSION_DIR=${OPENSHIFT_PHP_DIR}/usr/php-${PHP_VERSION}
 
 # Install/Update composer
-COMPOSER_PATH=${PHP_VERSION_DIR}/bin/composer
+COMPOSER_PATH=${OPENSHIFT_PHP_DIR}/composer/bin/composer
 if [ -f "${COMPOSER_PATH}" ]; then
     ${COMPOSER_PATH} self-update
 else
-    pushd "${PHP_VERSION_DIR}/bin"
+    pushd `dirname ${COMPOSER_PATH}`
     php -r "readfile('https://getcomposer.org/installer');" | php
     mv composer.phar "${COMPOSER_PATH}"
     popd

@@ -32,5 +32,5 @@ fi
 # Set version env variables
 echo "${PHP_VERSION}" > env/OPENSHIFT_PHP_VERSION
 echo "${PHP_VERSION_DIR}" > env/OPENSHIFT_PHP_VERSION_DIR
-echo "${PHP_VERSION_DIR}/bin" > env/OPENSHIFT_PHP_PATH_ELEMENT
+echo "${PHP_VERSION_DIR}/bin:${OPENSHIFT_PHP_DIR}/composer/bin" > env/OPENSHIFT_PHP_PATH_ELEMENT
 echo $(eval echo `${PHP_VERSION_DIR}/bin/php-config --extension-dir`) > env/OPENSHIFT_PHP_EXTENSION_DIR
