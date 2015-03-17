@@ -53,7 +53,7 @@ Also create the `php-fpm.conf.erb` file and copy the content from [`conf/php-fpm
 Now you can customize the php-fpm configuration.
 
 ## Composer/PEAR
-Composer is installed by default and can bed used by simply ssh to your application and typing in `composer`. 
+Composer is installed by default and can be used by simply ssh to your application and typing in `composer`. 
 
 So where is PEAR? It's not there! Why? Read [The rise of Composer and the fall of PEAR](http://fabien.potencier.org/article/72/the-rise-of-composer-and-the-fall-of-pear). 
 If you really need PEAR then download it your self using [`php go-pear.phar`](http://pear.php.net/manual/en/installation.getting.php) and pray it work. *Any PR's related to PEAR or failure to install it will be ignored*
