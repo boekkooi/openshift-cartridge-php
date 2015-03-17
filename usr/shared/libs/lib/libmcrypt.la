@@ -14,7 +14,7 @@ library_names=''
 old_library='libmcrypt.a'
 
 # Libraries that this one depends upon.
-dependency_libs=' /var/lib/openshift/550438a54382ec871100005e/app-root/runtime/repo/php/libs/lib/libltdl.la -ldl'
+dependency_libs=' /var/lib/openshift/5505b599e0b8cd0c010000c0/app-root/repo/compile-php/catridge/usr/libs/lib/libltdl.la -ldl'
 
 # Version information for libmcrypt.
 current=8
@@ -32,4 +32,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/var/lib/openshift/550438a54382ec871100005e/app-root/runtime/repo/php/libs/lib'
+libdir='/var/lib/openshift/5505b599e0b8cd0c010000c0/app-root/repo/compile-php/catridge/usr/libs/lib'

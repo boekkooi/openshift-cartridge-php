@@ -6,7 +6,7 @@ CFLAGS =
 CXXFLAGS =  --std=c++0x
 # DEFS only contains those UCONFIG_CPPFLAGS which are not auto-set by platform.h
 DEFS = 
-prefix = /var/lib/openshift/550438a54382ec871100005e/app-root/runtime/repo/php/libs
+prefix = /var/lib/openshift/5505b599e0b8cd0c010000c0/app-root/repo/compile-php/catridge/usr/libs
 exec_prefix = ${prefix}
 #bindir = ${exec_prefix}/bin
 libdir = ${exec_prefix}/lib

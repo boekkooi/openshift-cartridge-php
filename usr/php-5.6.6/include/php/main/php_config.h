@@ -2213,7 +2213,7 @@
 #define PHP_BLOWFISH_CRYPT 1
 
 /* PHP build date */
-#define PHP_BUILD_DATE "2015-03-14"
+#define PHP_BUILD_DATE "2015-03-15"
 
 /* Define if your system has fork/vfork/CreateProcess */
 #define PHP_CAN_SUPPORT_PROC_OPEN 1
@@ -2291,7 +2291,7 @@
 #define PHP_STD_DES_CRYPT 1
 
 /* uname -a output */
-#define PHP_UNAME "Linux ex-std-node97.prod.rhcloud.com 2.6.32-504.3.3.el6.x86_64 #1 SMP Fri Dec 12 16:05:43 EST 2014 x86_64 x86_64 x86_64 GNU/Linux"
+#define PHP_UNAME "Linux ex-std-node346.prod.rhcloud.com 2.6.32-504.3.3.el6.x86_64 #1 SMP Fri Dec 12 16:05:43 EST 2014 x86_64 x86_64 x86_64 GNU/Linux"
 
 /* Whether PHP has to use its own crypt_r for blowfish, des and ext des */
 #define PHP_USE_PHP_CRYPT_R 1

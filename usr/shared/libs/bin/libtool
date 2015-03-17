@@ -1,6 +1,6 @@
 #! /bin/sh
 # Generated automatically by config.status (libtool) 2.4.6
-# Libtool was configured on host ex-std-node97.prod.rhcloud.com:
+# Libtool was configured on host ex-std-node346.prod.rhcloud.com:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 
 # Provide generalized library-building support services.

@@ -10,14 +10,14 @@ include_dir="${prefix}/include/php"
 includes="-I$include_dir -I$include_dir/main -I$include_dir/TSRM -I$include_dir/Zend -I$include_dir/ext -I$include_dir/ext/date/lib"
 ldflags=" -L${OPENSHIFT_PHP_LIBS_DIR}/lib -L/usr/lib64"
 libs="-lcrypt   -lz -lexslt -lcrypt -lreadline -lncurses -lpq -lrt -lpq -lmcrypt -lltdl -lstdc++ -lX11 -lXpm -lpng -lz -ljpeg -lcurl -lbz2 -lz -lrt -lm -ldl -lnsl  -lrt -lxml2 -lz -lm -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err -lssl -lcrypto -lcurl -lxml2 -lz -lm -lssl -lcrypto -lfreetype -licui18n -licuuc -licudata -licuio -lxml2 -lz -lm -lxml2 -lz -lm -lcrypt -lxml2 -lz -lm -lxml2 -lz -lm -lxml2 -lz -lm -lxml2 -lz -lm -lxml2 -lz -lm -lxslt -lxml2 -lz -lm -lssl -lcrypto -lcrypt "
-extension_dir='${OPENSHIFT_PHP_VERSION_DIR}/lib/php/extensions/no-debug-non-zts-20121212'
+extension_dir='${OPENSHIFT_PHP_DIR}/ext'
 man_dir=`eval echo ${datarootdir}/man`
 program_prefix=""
 program_suffix=""
 exe_extension=""
 php_cli_binary=NONE
 php_cgi_binary=NONE
-configure_options=" '--prefix=${OPENSHIFT_PHP_VERSION_DIR}' '--with-mcrypt=${OPENSHIFT_PHP_LIBS_DIR}' '--with-layout=PHP' '--with-curl' '--with-zlib' '--with-mhash' '--with-mysql' '--with-pgsql' '--with-mysqli' '--with-pdo-mysql' '--with-pdo-pgsql' '--with-openssl' '--with-xmlrpc' '--with-xsl' '--with-bz2' '--with-gettext' '--with-readline' '--with-kerberos' '--with-gd' '--with-jpeg-dir' '--with-png-dir' '--with-xpm-dir' '--with-freetype-dir' '--without-pear' '--enable-gd-native-ttf' '--disable-debug' '--enable-fpm' '--enable-cli' '--enable-inline-optimization' '--enable-exif' '--enable-wddx' '--enable-zip' '--enable-bcmath' '--enable-calendar' '--enable-ftp' '--enable-mbstring' '--enable-soap' '--enable-sockets' '--enable-shmop' '--enable-dba' '--enable-sysvsem' '--enable-sysvshm' '--enable-sysvmsg' '--enable-intl' '--enable-opcache'"
+configure_options=" '--prefix=${OPENSHIFT_PHP_VERSION_DIR}' '--localstatedir=${OPENSHIFT_PHP_DIR}' '--with-mcrypt=${OPENSHIFT_PHP_LIBS_DIR}' '--with-layout=PHP' '--with-curl' '--with-zlib' '--with-mhash' '--with-mysql' '--with-pgsql' '--with-mysqli' '--with-pdo-mysql' '--with-pdo-pgsql' '--with-openssl' '--with-xmlrpc' '--with-xsl' '--with-bz2' '--with-gettext' '--with-readline' '--with-kerberos' '--with-gd' '--with-jpeg-dir' '--with-png-dir' '--with-xpm-dir' '--with-freetype-dir' '--without-pear' '--disable-debug' '--enable-gd-native-ttf' '--enable-fpm' '--enable-cli' '--enable-inline-optimization' '--enable-exif' '--enable-wddx' '--enable-zip' '--enable-bcmath' '--enable-calendar' '--enable-ftp' '--enable-mbstring' '--enable-soap' '--enable-sockets' '--enable-shmop' '--enable-dba' '--enable-sysvsem' '--enable-sysvshm' '--enable-sysvmsg' '--enable-intl' '--enable-opcache'"
 php_sapis=" cli fpm cgi"
 
 # Set php_cli_binary and php_cgi_binary if available
