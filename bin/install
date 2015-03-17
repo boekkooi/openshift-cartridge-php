@@ -28,6 +28,10 @@ else
     popd
 fi
 
+# Install pecl on update
+${OPENSHIFT_PHP_DIR}/bin/control build
+
+# Result for the client
 client_result ""
 client_result "PHP enviroment successfully installed."
 client_result ""
