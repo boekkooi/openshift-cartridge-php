@@ -52,6 +52,12 @@ In the `fpm` directory create the `php.ini.erb` file and copy the content from [
 Also create the `php-fpm.conf.erb` file and copy the content from [`conf/php-fpm.ini.erb`](https://github.com/boekkooi/openshift-cartridge-php/blob/master/conf/php-fpm.conf.erb) into it.
 Now you can customize the php-fpm configuration.
 
+## Composer/PEAR
+Composer is installed by default and can bed used by simply ssh to your application and typing in `composer`. 
+
+So where is PEAR? It's not there! Why? Read [The rise of Composer and the fall of PEAR](http://fabien.potencier.org/article/72/the-rise-of-composer-and-the-fall-of-pear). 
+If you really need PEAR then download it your self using [`php go-pear.phar`](http://pear.php.net/manual/en/installation.getting.php) and pray it work. *Any PR's related to PEAR or failure to install it will be ignored*
+
 ### PECL
 If you have created `.openshift/action_hooks/build` you can create the `.openshift/php-pecl.txt` to auto install pecl extensions.
 This file must constain have a pecl extension name and version per line for example:
