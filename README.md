@@ -14,6 +14,13 @@ For example to install PHP 5.5.22 you can use:
 rhc cartridge add -a myapp --env OPENSHIFT_PHP_VERSION=5.5.22 http://cartreflect-claytondev.rhcloud.com/github/boekkooi/openshift-cartridge-php
 ```
 
+## Versions
+Currently this cartridge has the following versions:
+- PHP 5.5.22
+- PHP 5.6.6
+
+If you need another version you can compile it yourself and submit a PR to get it integrated.
+
 ## Configuration
 For the best result with this cartridge you are adviced to create a `.openshift/action_hooks/build` and add the following to it:  
 ```BASH
@@ -35,7 +42,6 @@ location ~ \.php$ {
     include <%= ENV['OPENSHIFT_NGINX_DIR'] %>/usr/nginx-<%= ENV['OPENSHIFT_NGINX_VERSION'] %>/conf/fastcgi_params;
 }
 ```
-
 
 ### PHP.ini etc. 
 If you have created `.openshift/action_hooks/build` you can fully customize the PHP configuration.
@@ -72,13 +78,6 @@ There is special support for [phalcon](http://phalconphp.com/) you can simply in
 phalcon 1.3.4 --enable-phalcon
 ```
 Don't forget to change your `.openshift/nginx.conf.erb` according to the [phalcon nginx installation notes](http://docs.phalconphp.com/en/latest/reference/nginx.html).
-
-## Versions
-Currently this cartridge has the following versions:
-- 5.5.22
-- 5.6.6
-
-If you need another version you can compile it yourself and submit a PR to get it integrated.
 
 ### Compiling a new version
 To compile a new version you will first need a openshift application.
