@@ -6,9 +6,25 @@ source ${OPENSHIFT_CARTRIDGE_SDK_BASH}
 export STOPTIMEOUT=20
 
 PHP_FPM_EXEC=${OPENSHIFT_PHP_VERSION_DIR}/sbin/php-fpm
-PHP_FPM_PID=${OPENSHIFT_PHP_DIR}/run/php-fpm.pid
+PHP_FPM_PID=${OPENSHIFT_PHP_DIR}/pid/php-fpm.pid
+
+function _setup_configuration () {
+    # Install config files
+    declare -A CONF_FILES
+    CONF_FILES=( ['cli/php.ini.erb']='php.ini' ['fpm/php.ini.erb']='php-fpm.ini' ['fpm/php-fpm.conf.erb']='php-fpm.conf' )
+    for file in "${!CONF_FILES[@]}"; do
+        CONF_TARGET_FILE=${CONF_FILES["${file}"]}
+        CONF_FILE=${OPENSHIFT_REPO_DIR}/.openshift/${file}
+
+        if [ -f "${CONF_FILE}" ]; then
+            oo-erb ${CONF_FILE} > ${OPENSHIFT_PHP_DIR}/conf/${CONF_TARGET_FILE}
+        fi
+    done
+}
 
 function start() {
+    _setup_configuration
+
     # Start php fpm
     ${PHP_FPM_EXEC} \
         --php-ini "${OPENSHIFT_PHP_DIR}/conf/php-fpm.ini" \
@@ -50,17 +66,7 @@ function status() {
 }
 
 function build() {
-    # Install config files
-    declare -A CONF_FILES
-    CONF_FILES=( ['cli/php.ini.erb']='php.ini' ['fpm/php.ini.erb']='php-fpm.ini' ['fpm/php-fpm.conf.erb']='php-fpm.conf' )
-    for file in "${!CONF_FILES[@]}"; do
-        CONF_TARGET_FILE=${CONF_FILES["${file}"]}
-        CONF_FILE=${OPENSHIFT_REPO_DIR}/.openshift/${file}
-
-        if [ -f "${CONF_FILE}" ]; then
-            oo-erb ${CONF_FILE} > ${OPENSHIFT_PHP_DIR}/conf/${CONF_TARGET_FILE}
-        fi
-    done
+    _setup_configuration
 
     # Install pecl
     PECL_FILE=${OPENSHIFT_REPO_DIR}/.openshift/php-pecl.txt
