@@ -8,6 +8,20 @@ export STOPTIMEOUT=20
 PHP_FPM_EXEC=${OPENSHIFT_PHP_VERSION_DIR}/sbin/php-fpm
 PHP_FPM_PID=${OPENSHIFT_PHP_DIR}/pid/php-fpm-${OPENSHIFT_GEAR_UUID}.pid
 
+function _is_running() {
+    if [ -f "${PHP_FPM_PID}" ]; then
+        local pid=`cat ${PHP_FPM_PID} 2> /dev/null`
+        [ -z "${pid}" ]  &&  return 1
+
+        local current_user=`id -u`
+        if `ps --pid ${pid} > /dev/null 2>&1` || \
+           `pgrep -x php-fpm -u ${current_user} > /dev/null 2>&1`; then
+            return 0
+        fi
+    fi
+    return 1
+}
+
 function _setup_configuration () {
     # Install config files
     declare -A CONF_FILES
@@ -23,13 +37,17 @@ function _setup_configuration () {
 }
 
 function start() {
-    _setup_configuration
+    if ! _is_running; then
+        _setup_configuration
 
-    # Start php fpm
-    ${PHP_FPM_EXEC} \
-        --php-ini "${OPENSHIFT_PHP_DIR}/conf/php-fpm.ini" \
-        --fpm-config "${OPENSHIFT_PHP_DIR}/conf/php-fpm.conf" \
-        --prefix "${OPENSHIFT_PHP_DIR}"
+        # Start php fpm
+        ${PHP_FPM_EXEC} \
+            --php-ini "${OPENSHIFT_PHP_DIR}/conf/php-fpm.ini" \
+            --fpm-config "${OPENSHIFT_PHP_DIR}/conf/php-fpm.conf" \
+            --prefix "${OPENSHIFT_PHP_DIR}"
+    else
+        echo "PHP-FPM already running" 1>&2
+    fi
 }
 
 
