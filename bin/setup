@@ -19,9 +19,7 @@ fi
 PHP_VERSION_DIR=${OPENSHIFT_PHP_DIR}/usr/php-${PHP_VERSION}
 
 # Create dirs
-for dir in log run conf ext 'composer/.composer' 'composer/bin'; do
-    mkdir -p "${OPENSHIFT_PHP_DIR}/${dir}"
-done
+mkdir -p ${OPENSHIFT_PHP_DIR}/{pid,socket,run,log,ext,composer/.composer,composer/bin}
 
 # Copy default extensions
 if [ -d ${PHP_VERSION_DIR}/ext/ ]; then
