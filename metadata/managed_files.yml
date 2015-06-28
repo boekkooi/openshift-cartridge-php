@@ -3,5 +3,3 @@ locked_files:
 - bin/*
 - env/
 - env/*
-processed_templates:
-- 'conf/*.erb'

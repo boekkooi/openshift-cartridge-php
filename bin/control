@@ -2,6 +2,7 @@
 set -e
 
 source ${OPENSHIFT_CARTRIDGE_SDK_BASH}
+source ${OPENSHIFT_PHP_DIR}/lib/util
 
 export STOPTIMEOUT=20
 
@@ -22,31 +23,19 @@ function _is_running() {
     return 1
 }
 
-function _setup_configuration () {
-    # Install config files
-    declare -A CONF_FILES
-    CONF_FILES=( ['cli/php.ini.erb']='php.ini' ['fpm/php.ini.erb']='php-fpm.ini' ['fpm/php-fpm.conf.erb']='php-fpm.conf' )
-    for file in "${!CONF_FILES[@]}"; do
-        CONF_TARGET_FILE=${CONF_FILES["${file}"]}
-        CONF_FILE=${OPENSHIFT_REPO_DIR}/.openshift/${file}
-
-        if [ -f "${CONF_FILE}" ]; then
-            oo-erb ${CONF_FILE} > ${OPENSHIFT_PHP_DIR}/conf/${CONF_TARGET_FILE}
-        fi
-    done
-}
-
 function start() {
     if ! _is_running; then
-        _setup_configuration
+        config
 
         # Start php fpm
         ${PHP_FPM_EXEC} \
             --php-ini "${OPENSHIFT_PHP_DIR}/conf/php-fpm.ini" \
             --fpm-config "${OPENSHIFT_PHP_DIR}/conf/php-fpm.conf" \
             --prefix "${OPENSHIFT_PHP_DIR}"
+
+        _is_running && client_result "PHP-FPM instance is started"
     else
-        echo "PHP-FPM already running" 1>&2
+        client_result "PHP-FPM already running" 1>&2
     fi
 }
 
@@ -72,6 +61,8 @@ function stop() {
             echo "PHP-FPM already stopped" 1>&2
         fi
     fi
+
+    ! _is_running && client_result "PHP-FPM instance is stopped"
 }
 
 function restart() {
@@ -79,12 +70,28 @@ function restart() {
     start
 }
 
+function reload() {
+    stop
+    build
+    start
+}
+
 function status() {
-    echo "TODO"
+    if _is_running; then
+        client_result "PHP-FPM is running"
+    else
+        client_result "PHP-FPM is stopped"
+    fi
 }
 
 function build() {
-    _setup_configuration
+    # Stop fpm if running
+    if _is_running; then
+        stop
+    fi
+
+    # Update configuration
+    config
 
     # Install pecl
     PECL_FILE=${OPENSHIFT_REPO_DIR}/.openshift/php-pecl.txt
@@ -112,6 +119,7 @@ case "$1" in
   stop)      stop ;;
   restart)   restart ;;
   status)    status ;;
+  reload)    reload ;;
   build)     build ;;
   *)         exit 0
 esac
