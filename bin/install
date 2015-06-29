@@ -32,8 +32,10 @@ fi
 ${OPENSHIFT_PHP_DIR}/bin/control build
 
 # Result for the client
-client_result ""
-client_result "PHP enviroment successfully installed."
-client_result ""
-client_result " Version: ${PHP_VERSION}"
-client_result ""
+if [ "${OPENSHIFT_GEAR_DNS}" == "${OPENSHIFT_APP_DNS}" ]; then
+    client_result ""
+    client_result "PHP enviroment successfully installed."
+    client_result ""
+    client_result " Version: ${PHP_VERSION}"
+    client_result ""
+fi
