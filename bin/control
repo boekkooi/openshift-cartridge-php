@@ -24,8 +24,13 @@ function _is_running() {
 }
 
 function start() {
+    config
+
+    if [ ${CONFIGURATION_DIRTY} -eq 1 ]; then
+        stop
+    fi
+
     if ! _is_running; then
-        config
 
         # Start php fpm
         ${PHP_FPM_EXEC} \
@@ -33,9 +38,9 @@ function start() {
             --fpm-config "${OPENSHIFT_PHP_DIR}/conf/php-fpm.conf" \
             --prefix "${OPENSHIFT_PHP_DIR}"
 
-        _is_running && client_result "PHP-FPM instance is started"
+        _is_running && echo "PHP-FPM instance is started"
     else
-        client_result "PHP-FPM already running" 1>&2
+        echo "PHP-FPM already running" 1>&2
     fi
 }
 
@@ -62,7 +67,7 @@ function stop() {
         fi
     fi
 
-    ! _is_running && client_result "PHP-FPM instance is stopped"
+    ! _is_running && echo "PHP-FPM instance is stopped"
 }
 
 function restart() {
