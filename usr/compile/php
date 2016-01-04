@@ -15,7 +15,7 @@ function install_php() {
     pushd ${BUILD_DIR}
 
     # Get archive
-    download_and_unpack ${pkg} http://www.php.net/get/${pkg}/from/us1.php.net/mirror
+    download_and_unpack ${pkg} http://php.net/get/${pkg}/from/this/mirror
     pushd php-${PHP_VERSION}
 
     echo "Configuring PHP."

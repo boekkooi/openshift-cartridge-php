@@ -9,7 +9,7 @@ case "$1" in
 esac
 
 # Resolve version
-PHP_VERSION=5.6.6
+PHP_VERSION=5.6.16
 if [ ! -z "${OPENSHIFT_PHP_VERSION}" ] && [ -d "${OPENSHIFT_PHP_DIR}/usr/php-${OPENSHIFT_PHP_VERSION}/" ]; then
     PHP_VERSION="${OPENSHIFT_PHP_VERSION}"
 elif [ -d "${OPENSHIFT_PHP_DIR}/usr/php-${version}/" ]; then
