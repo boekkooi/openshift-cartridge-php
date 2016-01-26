@@ -55,7 +55,7 @@ In the `cli` directory create the `php.ini.erb` file and copy the content from [
 Now you can customize the cli php configuration.
 
 In the `fpm` directory create the `php.ini.erb` file and copy the content from [`conf/php-fpm.ini.erb`](https://github.com/boekkooi/openshift-cartridge-php/blob/master/conf/php-fpm.ini.erb) into it.
-Also create the `php-fpm.conf.erb` file and copy the content from [`conf/php-fpm.ini.erb`](https://github.com/boekkooi/openshift-cartridge-php/blob/master/conf/php-fpm.conf.erb) into it.
+Also create the `php-fpm.conf.erb` file and copy the content from [`conf/php-fpm.conf.erb`](https://github.com/boekkooi/openshift-cartridge-php/blob/master/conf/php-fpm.conf.erb) into it.
 Now you can customize the php-fpm configuration.
 
 ## Composer/PEAR
