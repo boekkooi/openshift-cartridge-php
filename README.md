@@ -71,6 +71,7 @@ This file must constain have a pecl extension name and version per line for exam
 apcu 4.0.7
 mongo 1.6.5
 ```
+Note for Openshift online: even though the scripts should automatically add the extension declaration in the php.ini files, if you have custom ini.erb files the extension declaration might be overwritten when they are deployed. In that case you must declare the extension manually in your .ini.erb files.
 
 ### Phalcon
 There is special support for [phalcon](http://phalconphp.com/) you can simply install it by adding the following to your `.openshift/php-pecl.txt` file.
