@@ -36,28 +36,48 @@ function install_pecl() {
     mkdir -p ${BUILD_DIR}
     pushd ${BUILD_DIR}
 
-    # Get archive
+    # Use custom logic for phalcon
     if [ "${1}" == "phalcon" ]; then
         local name=phalcon-v${2}
+        rm -rf cphalcon-${name}
+
         download_and_unpack ${name}.tar.gz https://github.com/phalcon/cphalcon/archive/${name}.tar.gz cphalcon-${name}
-        pushd cphalcon-${name}/build/64bits
+        pushd cphalcon-${name}/build
+        
+        # patch install
+        sed \
+            -e "s~phpize ~${PHP_BIN_DIR}/phpize ~g" \
+            -e "s~./configure ~./configure --with-php-config=${PHP_BIN_DIR}/php-config ~g" \
+            < install > openshift_install
+        chmod +x openshift_install
+
+        # run install
+        ./openshift_install &
+        BG_PID=$!
+
+        while kill -0 "${BG_PID}" >/dev/null 2>&1; do
+          sh -c "sleep 60; echo -n '.'";
+        done
+
+        popd
     else
         local name=${1}-${2}
         download_and_unpack ${name}.tgz http://pecl.php.net/get/${name}.tgz
         pushd ${name}
+    
+        echo "Configuring ${1}."
+        ${PHP_BIN_DIR}/phpize
+        ./configure \
+            --with-php-config=${PHP_BIN_DIR}/php-config \
+            ${3}
+    
+        echo "Compiling ${1}."
+        make install
+
+        popd
     fi
 
-    echo "Configuring ${1}."
-    ${PHP_BIN_DIR}/phpize
-    ./configure \
-        --with-php-config=${PHP_BIN_DIR}/php-config \
-        ${3}
-
-    echo "Compiling ${1}."
-    make install
-
     echo "Cleaning build directory."
-    popd
     popd
     rm -rf ${BUILD_DIR}
 
