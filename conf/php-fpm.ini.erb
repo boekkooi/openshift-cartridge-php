@@ -1119,20 +1119,20 @@ mysql.max_links = -1
 ; compile-time value defined MYSQL_PORT (in that order).  Win32 will only look
 ; at MYSQL_PORT.
 ; http://php.net/mysql.default-port
-mysql.default_port =
+mysql.default_port = <%= ENV['OPENSHIFT_MYSQL_DB_PORT'] %>
 
 ; Default socket name for local MySQL connects.  If empty, uses the built-in
 ; MySQL defaults.
 ; http://php.net/mysql.default-socket
-mysql.default_socket =
+mysql.default_socket = <%= ENV['OPENSHIFT_MYSQL_DB_SOCKET'] %>
 
 ; Default host for mysql_connect() (doesn't apply in safe mode).
 ; http://php.net/mysql.default-host
-mysql.default_host =
+mysql.default_host = <%= ENV['OPENSHIFT_MYSQL_DB_HOST'] %>
 
 ; Default user for mysql_connect() (doesn't apply in safe mode).
 ; http://php.net/mysql.default-user
-mysql.default_user =
+mysql.default_user = <%= ENV['OPENSHIFT_MYSQL_DB_USERNAME'] %>
 
 ; Default password for mysql_connect() (doesn't apply in safe mode).
 ; Note that this is generally a *bad* idea to store passwords in this file.
@@ -1140,7 +1140,7 @@ mysql.default_user =
 ; and reveal this password!  And of course, any users with read access to this
 ; file will be able to reveal the password as well.
 ; http://php.net/mysql.default-password
-mysql.default_password =
+mysql.default_password = <%= ENV['OPENSHIFT_MYSQL_DB_PASSWORD'] %>
 
 ; Maximum time (in seconds) for connect timeout. -1 means no limit
 ; http://php.net/mysql.connect-timeout
