@@ -76,9 +76,11 @@ Note for Openshift online: even though the scripts should automatically add the 
 ### Phalcon
 There is special support for [phalcon](http://phalconphp.com/) you can simply install it by adding the following to your `.openshift/php-pecl.txt` file.
 ```
-phalcon 1.3.4 --enable-phalcon
+phalcon 1.3.4
 ```
 Don't forget to change your `.openshift/nginx.conf.erb` according to the [phalcon nginx installation notes](http://docs.phalconphp.com/en/latest/reference/nginx.html).
+
+*Be aware that to compile phalcon 2.x you need a medium gear because 1GB of RAM is required*
 
 ### Compiling a new version
 To compile a new version you will first need a openshift application.
