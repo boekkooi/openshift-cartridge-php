@@ -82,11 +82,8 @@ function install_pecl() {
     rm -rf ${BUILD_DIR}
 
     # Add extension to the php.ini
-    if ! grep "extension=${1}.so" "${OPENSHIFT_PHP_DIR}/conf/php.ini"; then
-        echo "extension=${1}.so" >> ${OPENSHIFT_PHP_DIR}/conf/php.ini
-    fi
-    if ! grep "extension=${1}.so" "${OPENSHIFT_PHP_DIR}/conf/php-fpm.ini"; then
-        echo "extension=${1}.so" >> ${OPENSHIFT_PHP_DIR}/conf/php-fpm.ini
+    if ! grep "extension=${1}.so" "${OPENSHIFT_PHP_DIR}/conf/ext/${1}.ini"; then
+        echo "extension=${1}.so" >> ${OPENSHIFT_PHP_DIR}/conf/ext/${1}.ini
     fi
 }
 
