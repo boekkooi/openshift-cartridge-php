@@ -2,7 +2,7 @@
 set -e
 
 source ${OPENSHIFT_CARTRIDGE_SDK_BASH}
-source ${OPENSHIFT_PHP_DIR}/lib/util
+source "${OPENSHIFT_PHP_DIR}/lib/control_util.sh"
 
 export STOPTIMEOUT=20
 

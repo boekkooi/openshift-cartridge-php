@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Include utils
-source utils
-
 # Locations
 CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 ROOT_DIR="${CURRENT_DIR}/catridge/usr"
 LIBS_DIR="${ROOT_DIR}/libs"
+
+# Include utils
+source "$( dirname $( dirname ${CURRENT_DIR} ) )/lib/util.sh"
 
 # Ensure root dir exists
 mkdir -p ${ROOT_DIR}

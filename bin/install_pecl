@@ -9,7 +9,7 @@ BUILD_DIR="${OPENSHIFT_TMP_DIR}/pecl-build"
 
 # Include utils
 export PATH="${OPENSHIFT_PHP_LIBS_DIR}/bin:${PATH}"
-source "${OPENSHIFT_PHP_DIR}/usr/compile/utils"
+source "${OPENSHIFT_PHP_DIR}/lib/util.sh"
 
 function check_pecl() {
     if [ -z "${1}" ] || [ -z "${2}" ]; then

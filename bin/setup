@@ -2,21 +2,32 @@
 set -e
 
 source ${OPENSHIFT_CARTRIDGE_SDK_BASH}
+source "${OPENSHIFT_PHP_DIR}/lib/setup_util.sh"
 
+# LFS configuration
+LFS_ENDPOINT=https://github.com/boekkooi/openshift-cartridge-php.git/info/lfs
+
+# Resolve version
 case "$1" in
   -v|--version)
     version="$2"
 esac
 
-# Resolve version
 PHP_VERSION=5.6.16
-if [ ! -z "${OPENSHIFT_PHP_VERSION}" ] && [ -d "${OPENSHIFT_PHP_DIR}/usr/php-${OPENSHIFT_PHP_VERSION}/" ]; then
+if [ ! -z "${OPENSHIFT_PHP_VERSION}" ] && [ -f "${OPENSHIFT_PHP_DIR}/usr/php-${OPENSHIFT_PHP_VERSION}.tar.gz" ]; then
     PHP_VERSION="${OPENSHIFT_PHP_VERSION}"
-elif [ -d "${OPENSHIFT_PHP_DIR}/usr/php-${version}/" ]; then
+elif [ -f "${OPENSHIFT_PHP_DIR}/usr/php-${version}.tar.gz" ]; then
     PHP_VERSION="${version}"
 fi
 
 PHP_VERSION_DIR=${OPENSHIFT_PHP_DIR}/usr/php-${PHP_VERSION}
+
+# Download and extract PHP version from LFS
+php_lfs_download_and_extact
+if [ ! -d "${PHP_VERSION_DIR}" ]; then
+    echo "Failed to download and extract PHP from LFS"
+    exit 1
+fi
 
 # Create dirs
 mkdir -p ${OPENSHIFT_PHP_DIR}/{pid,socket,run,ext,composer/.composer,composer/bin,conf/ext}
