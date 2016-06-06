@@ -3,7 +3,7 @@
 # Locations
 CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 ROOT_DIR="${CURRENT_DIR}/catridge/usr"
-LIBS_DIR="${ROOT_DIR}/libs"
+LIBS_DIR="${ROOT_DIR}/shared/libs"
 
 # Include utils
 source "$( dirname $( dirname ${CURRENT_DIR} ) )/lib/util.sh"

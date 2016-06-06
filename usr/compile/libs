@@ -12,7 +12,7 @@ ICU_VERSION='57.1'
 LIBMCRYPT_VERSION='2.5.8'
 LIBTOOL_VERSION='2.4.6'
 RE2C_VERSION='0.16'
-BISON_VERSION='3.0.4'
+BISON_VERSION='2.7.1'
 
 # Define functions
 function install_re2c() {

@@ -95,13 +95,15 @@ SSH into your app and go to the compile folder (`cd ${OPENSHIFT_REPO_DIR}/php/co
 ```BASH
 ./libs
 ./php
-./libs_package
 ```
 Once compiling is done you can download the `php-{version}.tar.gz` from you application.
-Extract the `php-{version}` from the archive and place them into the `openshift-cartridge-php/usr` folder.
+Place the archive into the `openshift-cartridge-php/usr` folder.
 Last but not least edit the `openshift-cartridge-php/manifest.yml` and add the versions.
 
-All done just commit and push to your `openshift-cartridge-php` repo and use:
+(Make sure you have [Git LFS](https://git-lfs.github.com/) installed.)
+Now commit and push to your `openshift-cartridge-php` repo and create a [PR](https://github.com/boekkooi/openshift-cartridge-php/pulls).
+
+To use your own fork make sure you change `LFS_ENDPOINT` in `openshift-cartridge-php/bin/setup` and use:
 ```BASH
 rhc cartridge add -a myapp http://cartreflect-claytondev.rhcloud.com/github/<user>/openshift-cartridge-php
 ```

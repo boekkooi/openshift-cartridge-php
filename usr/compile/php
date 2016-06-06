@@ -6,6 +6,7 @@ source common
 
 # Set build dir
 BUILD_DIR="${CURRENT_DIR}/tmp"
+PHP_VERSIONS=$(cat versions)
 
 # Define function
 function install_php() {
@@ -79,7 +80,7 @@ function install_php() {
 }
 
 # Compile all required versions
-for version in $(cat versions); do
+for version in ${PHP_VERSIONS}; do
     if [ ! -z "${version}" ]; then
         PHP_DIR="${ROOT_DIR}/php-${version}"
         PHP_VERSION="${version}"
@@ -117,14 +118,42 @@ for version in $(cat versions); do
         fi
         popd
 
-
         # Compress
         pushd ${ROOT_DIR}
         cp -R ext php-${version}/
-        tar -zcvf "${OPENSHIFT_REPO_DIR}/public/php-${version}.tar.gz" php-${version}
+        tar -cvf "${OPENSHIFT_REPO_DIR}/public/php-${version}.tar" php-${version}
         popd
 
         # Clean up
         rm -rf ${PHP_DIR}
     fi
 done
+
+# Patch libs for cartridge usage
+pushd ${LIBS_DIR}/bin
+LIBS_DIR_ESCAPED="${LIBS_DIR//\//\\/}"
+ROOT_DIR_ESCAPED="${ROOT_DIR//\//\\/}"
+for file in icu-config libmcrypt-config libtoolize yacc; do
+    if [ -f ${file} ]; then
+        sed -i "s/${LIBS_DIR_ESCAPED}/\${OPENSHIFT_PHP_LIBS_DIR}/g" ${file}
+        sed -i "s/${ROOT_DIR_ESCAPED}/\${OPENSHIFT_PHP_DIR}/g" ${file}
+    fi
+done
+popd
+
+## Remove unneeded files
+rm -rf "${LIBS_DIR}/man"
+rm -rf "${LIBS_DIR}/share/man"
+
+## Append and compress for download
+pushd ${ROOT_DIR}
+for version in ${PHP_VERSIONS}; do
+    if [ -f "${OPENSHIFT_REPO_DIR}/public/php-${version}.tar" ]; then
+        # Append libs
+        tar -rvf "${OPENSHIFT_REPO_DIR}/public/php-${version}.tar" shared
+
+        # Compress for download
+        gzip --rsyncable "${OPENSHIFT_REPO_DIR}/public/php-${version}.tar"
+    fi
+done
+popd
