@@ -73,12 +73,22 @@ function unpack() {
         exit -1
     fi
 
+    set +e
+
     echo "- Extracting"
-    tar xfz "${1}" --directory "${2}"
+    tar xfz "${1}" --directory="${2}"
     if [ $? -ne 0 ]; then
-        echo "Failed to extract data ${1} into ${2}. Please remove the file manually any try again."
-        exit 1
+        gunzip -c "${1}" | tar xfz - --directory="${2}"
+
+        if [ $? -ne 0 ]; then
+            echo "Failed to extract data ${1} into ${2}. Please remove the file manually any try again."
+            exit 1
+        fi
     fi
+
+    rm -f "${1}"
+
+    set -e
 
     return 0
 }
