@@ -129,6 +129,11 @@ for version in ${PHP_VERSIONS}; do
     fi
 done
 
+# Backup libs before changing
+pushd ${ROOT_DIR}
+tar -cvf "${OPENSHIFT_REPO_DIR}/public/libs.tar" shared
+popd
+
 # Patch libs for cartridge usage
 pushd ${LIBS_DIR}/bin
 LIBS_DIR_ESCAPED="${LIBS_DIR//\//\\/}"
@@ -156,4 +161,11 @@ for version in ${PHP_VERSIONS}; do
         gzip --rsyncable "${OPENSHIFT_REPO_DIR}/public/php-${version}.tar"
     fi
 done
+popd
+
+# Restore libs
+pushd ${ROOT_DIR}
+rm -rf shared/
+tar -xf "${OPENSHIFT_REPO_DIR}/public/libs.tar" shared
+rm "${OPENSHIFT_REPO_DIR}/public/libs.tar"
 popd
