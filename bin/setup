@@ -13,7 +13,7 @@ case "$1" in
     version="$2"
 esac
 
-PHP_VERSION=5.6.16
+PHP_VERSION=7.0.7
 if [ ! -z "${OPENSHIFT_PHP_VERSION}" ] && [ -f "${OPENSHIFT_PHP_DIR}/usr/php-${OPENSHIFT_PHP_VERSION}.tar.gz" ]; then
     PHP_VERSION="${OPENSHIFT_PHP_VERSION}"
 elif [ -f "${OPENSHIFT_PHP_DIR}/usr/php-${version}.tar.gz" ]; then

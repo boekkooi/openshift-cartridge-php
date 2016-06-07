@@ -16,8 +16,11 @@ rhc cartridge add -a myapp --env OPENSHIFT_PHP_VERSION=5.5.22 http://cartreflect
 
 ## Versions
 Currently this cartridge has the following versions:
-- PHP 5.5.22
+- PHP 7.0.7
+- PHP 5.6.22
 - PHP 5.6.16
+- PHP 5.5.36
+- PHP 5.5.22
 
 If you need another version you can compile it yourself and submit a PR to get it integrated.
 
