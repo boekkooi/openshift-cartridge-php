@@ -1832,6 +1832,9 @@ ldap.max_links = -1
 ;dba.default_handler=
 
 [opcache]
+; Load the opcache extension
+zend_extension=<%= ENV['OPENSHIFT_PHP_EXTENSION_DIR'] %>/opcache.so
+
 ; Determines if Zend OPCache is enabled
 ;opcache.enable=0
 
