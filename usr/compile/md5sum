@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+pushd "${CURRENT_DIR}/../"
+FILES="php-*.tar.gz"
+for file in ${FILES}; do
+    if [ -f ${file} ]; then
+        md5sum "${file}" > "${file}.md5"
+    fi
+done
+popd
