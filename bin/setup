@@ -4,7 +4,9 @@ set -e
 source ${OPENSHIFT_CARTRIDGE_SDK_BASH}
 source "${OPENSHIFT_PHP_DIR}/lib/setup_util.sh"
 
-# LFS configuration
+# Archive/LFS configuration
+declare -a ARCHIVE_SERVERS
+ARCHIVE_SERVERS=( "http://download-bcartridges.rhcloud.com/php" )
 LFS_ENDPOINT=https://github.com/boekkooi/openshift-cartridge-php.git/info/lfs
 
 # Resolve version
@@ -23,7 +25,7 @@ fi
 PHP_VERSION_DIR=${OPENSHIFT_PHP_DIR}/usr/php-${PHP_VERSION}
 
 # Download and extract PHP version from LFS
-php_lfs_download_and_extact
+php_download_and_unpack
 if [ ! -d "${PHP_VERSION_DIR}" ]; then
     echo "Failed to download and extract PHP from LFS"
     exit 1
